@@ -13,7 +13,7 @@ class myHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
         # Send the html message
-        self.wfile.write(bytes("Hello World ! hello mi", "utf-8"))
+        self.wfile.write(bytes("Hello World !", "utf-8"))
 
 try:
     # Create a web server and define the handler to manage the
