@@ -1,7 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-import sqlite3
+from datetime import datetime
 
+import json
 
 PORT_NUMBER = 8080
 
@@ -18,7 +19,14 @@ class myHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
         # Send the html message
-        self.wfile.write(bytes("Hello World !", "utf-8"))
+
+        now = datetime.now()
+        time = now.strftime('%m/%d/%y')
+        time_dict = {
+            'time': time
+        }
+        time_dict = json.dumps(time_dict)
+        self.wfile.write(bytes(time_dict, "utf-8"))
 
 
 try:
