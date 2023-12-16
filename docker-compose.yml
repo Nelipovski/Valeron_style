@@ -1,0 +1,12 @@
+version: "3"
+services:
+  server:
+    build: ./server
+    command: puthon main.py
+    ports:
+      - "8080:8080"
+  client:
+    build: ./client
+    command: python client.py
+    depends_on:
+      - server

@@ -2,14 +2,46 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from datetime import datetime
 
-import requests
+import psycopg2
 
 import json
 
 import logging
 
 logging.basicConfig(level=logging.INFO, filename='first_log.log')
+####
+#
+#
 
+sql1 = '''CREATE TABLE IF NOT EXISTS users (
+id SERIAL PRIMARY KEY,
+name VARCHAR(20) NOT NULL,
+email VARCHAR(50) NOT NULL UNIQUE,
+login VARCHAR(20) NOT NULL UNIQUE,
+password VARCHAR(130) NOT NULL
+);'''
+
+
+def sql_func(sql: str):
+    conn = psycopg2.connect(
+        dbname="pg_db", host="localhost", user="admin", password="password", port="5434")
+
+    conn.autocommit = True  # устанавливаем актокоммит
+
+    cursor = conn.cursor()
+    cursor.execute(sql)
+    # непосредственное выполнение команды sql1
+
+    cursor.close()
+
+    conn.close()
+#####
+#####
+#####
+
+
+sql_func("CREATE TABLE IF NOT EXISTS peoples (id SERIAL PRIMARY KEY, name VARCHAR(50),  age INTEGER)")
+sql_func("CREATE TABLE IF NOT EXISTS peoples1 (id SERIAL PRIMARY KEY, name VARCHAR(50),  age INTEGER)")
 
 PORT_NUMBER = 8080
 
@@ -21,26 +53,20 @@ class myHandler(BaseHTTPRequestHandler):
 
     # Handler for the GET requests
     def do_GET(self):
-        path = self.path
 
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers()
         # Send the html message
 
-        if path == '/Time':
-            now = datetime.now()
-            time = now.strftime('%H:%M:%S')
-            time_dict = {
-                'time': time
-            }
-            time_dict = json.dumps(time_dict)
-            self.wfile.write(bytes(time_dict, "utf-8"))
-            logging.info(f'{time_dict}')
-
-        elif path == '/Index':
-            response = requests.get('Valeron_style/index.html')
-            self.wfile.write(bytes(response.text, 'utf-8'))
+        now = datetime.now()
+        time = now.strftime('%H:%M:%S')
+        time_dict = {
+            'time': time
+        }
+        time_dict = json.dumps(time_dict)
+        self.wfile.write(bytes(time_dict, "utf-8"))
+        logging.info(f'{time_dict}')
 
 
 try:
